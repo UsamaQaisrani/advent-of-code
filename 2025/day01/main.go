@@ -6,6 +6,13 @@ import (
 	"strconv"
 )
 
+func abs(a int) int {
+    if a >= 0 {
+        return a
+    }
+    return -a
+}
+
 func main() {
 	path := "input.txt"
 
@@ -23,7 +30,12 @@ func main() {
 	}
 	fmt.Println("PartOne: ", partOneOutput)
 
-
+	partTwoOutput, err := partTwo(refinedInstructions)
+	if err != nil {
+		fmt.Println("Error while computing solution:", err)
+		return
+	}
+	fmt.Println("PartTwo: ", partTwoOutput)
 }
 
 func partOne(input []string) (int, error) {
@@ -62,14 +74,50 @@ func partOne(input []string) (int, error) {
 	return answer, nil
 }
 
-func abs(a int) int {
-    if a >= 0 {
-        return a
-    }
-    return -a
-}
-
-func partTwo() (int, error) {
+func partTwo(input []string) (int, error) {
 	answer := 0
+	currPos := 50
+
+	for _, instruction := range input {
+		if len(instruction) < 2 {
+			continue
+		}
+
+		prevPos := currPos
+
+		direction := instruction[:1]
+		distance, err := strconv.Atoi(instruction[1:])
+		if err != nil {
+			return -1, err
+		}
+
+		dir := 1
+		if direction == "L" {
+			dir = -1
+		}
+
+		if distance >= 100 {
+			answer += distance / 100
+		}
+
+		currPos += (distance % 100) * dir
+
+		if currPos > 99 {
+			currPos -= 100
+			if currPos != 0 && prevPos != 0 {
+				answer += 1
+			}
+		} else if currPos < 0 {
+			currPos += 100
+			if currPos != 0 && prevPos != 0 {
+				answer += 1
+			}
+		}
+
+		if currPos == 0 {
+			answer++
+		}
+	}
+
 	return answer, nil
 }
