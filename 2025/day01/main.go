@@ -7,27 +7,30 @@ import (
 )
 
 func main() {
-	partOneOutput, err := solution()
-	if err != nil {
-		fmt.Println("Error while reading file content:", err)
-		return
-	}
-	fmt.Println("PartOne: ", partOneOutput)
-}
-
-func solution() (int, error) {
 	path := "input.txt"
-	answer := 0
-	currPosition := 50
 
 	rawInstructions, err := os.ReadFile(path)
 	if err != nil {
-		return -1, err
+		fmt.Println("Error while reading file content:", err)
 	}
 
 	refinedInstructions := strings.Split(string(rawInstructions), "\n")
 
-	for _, instruction := range refinedInstructions {
+	partOneOutput, err := partOne(refinedInstructions)
+	if err != nil {
+		fmt.Println("Error while computing solution:", err)
+		return
+	}
+	fmt.Println("PartOne: ", partOneOutput)
+
+
+}
+
+func partOne(input []string) (int, error) {
+	answer := 0
+	currPosition := 50
+
+	for _, instruction := range input {
 		if len(instruction) < 2 {
 			// Not a valid instruction, skip
 			continue
@@ -64,4 +67,9 @@ func abs(a int) int {
         return a
     }
     return -a
+}
+
+func partTwo() (int, error) {
+	answer := 0
+	return answer, nil
 }
