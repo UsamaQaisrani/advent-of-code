@@ -34,6 +34,13 @@ func main() {
 		return
 	}
 	fmt.Println("PartOne:", partOneSol)
+
+	partTwoSol, err := partTwo(sliceInput)
+	if err != nil {
+		fmt.Println("Error Occured:", err)
+		return
+	}
+	fmt.Println("PartTwo:", partTwoSol)
 }
 
 func partOne(input [][]string) (int, error) {
@@ -66,7 +73,6 @@ func partOne(input [][]string) (int, error) {
 				}
 				if target >= low {
 					totalSum += target
-					fmt.Println("Found:", target)
 				}
 				seed++
 			}
@@ -74,4 +80,90 @@ func partOne(input [][]string) (int, error) {
 	}
 
 	return totalSum, nil
+}
+
+func partTwo(input [][]string) (int, error) {
+	uniqueNums := make(map[int64]struct{})
+
+	for _, row := range input {
+		if len(row) < 2 {
+			continue
+		}
+
+		L, err := strconv.ParseInt(row[0], 10, 64)
+		if err != nil {
+			return 0, fmt.Errorf("invalid L: %w", err)
+		}
+		R, err := strconv.ParseInt(row[1], 10, 64)
+		if err != nil {
+			return 0, fmt.Errorf("invalid R: %w", err)
+		}
+
+		for seedLen := 1; seedLen <= 9; seedLen++ {
+
+			minSeedVal := int64(1)
+			for i := 0; i < seedLen-1; i++ {
+				minSeedVal *= 10
+			}
+			maxSeedVal := minSeedVal*10 - 1
+			if seedLen == 1 {
+				minSeedVal = 1 
+			}
+
+			shift := int64(1)
+			for i := 0; i < seedLen; i++ {
+				shift *= 10
+			}
+
+			M := int64(1) 
+			
+			for k := 2; ; k++ {
+				if M > (math.MaxInt64-1)/shift {
+					break 
+				}
+				M = M*shift + 1
+
+				reqMin := (L + M - 1) / M  
+				
+				reqMax := R / M           
+
+				start := max(reqMin, minSeedVal)
+				end := min(reqMax, maxSeedVal)
+
+					break 
+				}
+				if minSeedVal*M > R {
+					break 
+				}
+
+				if start <= end {
+					for s := start; s <= end; s++ {
+						val := s * M
+						uniqueNums[val] = struct{}{}
+					}
+				}
+			}
+		}
+	}
+
+	totalSum := 0
+	for num := range uniqueNums {
+		totalSum += int(num)
+	}
+
+	return totalSum, nil
+}
+
+func min(a, b int64) int64 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func max(a, b int64) int64 {
+	if a > b {
+		return a
+	}
+	return b
 }
