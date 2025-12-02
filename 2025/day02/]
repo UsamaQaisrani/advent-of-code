@@ -1,0 +1,33 @@
+package main
+import (
+	"fmt"
+	"os"
+	"strings"
+)
+
+func main() {
+	path := fmt.Sprintf("input.txt")
+
+	rawInput, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Println("Error while reading file:", err)
+		return
+	}
+
+	refinedInput := strings.Split(string(rawInput), ",")
+	var sliceInput [][]string
+	for _, input := range refinedInput {
+		currRange := strings.Split(input, "-")
+		if len(currRange) < 2 {
+			//Skip end of file or invalid range
+			continue
+		}
+		sliceInput = append(sliceInput, currRange)
+	}
+
+	partOneSol, err := partOne(sliceInput)
+}
+
+func partOne(input []string) (int, error) {
+	return 0, nil
+}
