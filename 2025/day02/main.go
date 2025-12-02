@@ -3,7 +3,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"stconv"
+	"strconv"
+	"math"
 )
 
 func main() {
@@ -15,7 +16,8 @@ func main() {
 		return
 	}
 
-	refinedInput := strings.Split(string(rawInput), ",")
+	removedNewLine := strings.Split(string(rawInput), "\n")
+	refinedInput := strings.Split(removedNewLine[0], ",")
 	var sliceInput [][]string
 	for _, input := range refinedInput {
 		currRange := strings.Split(input, "-")
@@ -35,17 +37,41 @@ func main() {
 }
 
 func partOne(input [][]string) (int, error) {
-
+	totalSum := 0
 	for _, currRange := range input {
-		fmt.Println(currRange)
-		low := strconv.Atoi(currRange[0])
-		high := strconv.Atoi(currRange[1])
-		seedLength := len(high)
+		low, err := strconv.Atoi(currRange[0])
+		if err != nil {
+			return -1, err
+		}
+		high, err := strconv.Atoi(currRange[1])
+		if err != nil {
+			return -1, err
+		}
 
-		for {
+		for i := 2; i <= len(currRange[1]); i += 2 {
+			currSeedLen := i / 2
+			seed := int(math.Pow(10, float64(currSeedLen-1)))
+			seedLimit := int(math.Pow(10, float64(currSeedLen))) - 1
 
+			for {
+				if seed > seedLimit {
+					break
+				}
+
+				multiplier := int(math.Pow(10, float64(currSeedLen))) + 1
+				target := seed * multiplier
+
+				if target > high {
+					break
+				}
+				if target >= low {
+					totalSum += target
+					fmt.Println("Found:", target)
+				}
+				seed++
+			}
 		}
 	}
 
-	return 0, nil
+	return totalSum, nil
 }
