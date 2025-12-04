@@ -16,8 +16,6 @@ def main():
     assert fileExtension != "", "Please enter a file extension. Example: go"
     assert "." not in fileExtension, "Please enter file extenstion without '.'"
 
-    root = "."
-
     parentDirPath = f"./{year}"
     if not os.path.exists(parentDirPath):
         os.makedirs(parentDirPath)
