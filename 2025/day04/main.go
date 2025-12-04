@@ -29,6 +29,13 @@ func main() {
 		return
 	}
 	fmt.Println("PartOne:",partOneSol)
+
+	partTwoSol, err := partTwo(refinedInput)
+	if err != nil {
+		fmt.Println("Error occured in PartOne:", err)
+		return
+	}
+	fmt.Println("PartTwo:", partTwoSol)
 }
 
 func partOne(input [][]rune) (int, error) {
@@ -36,7 +43,6 @@ func partOne(input [][]rune) (int, error) {
 	for i, row := range input {
 		for j, _ := range row {
 			currCount := expand(i,j, input, 1)
-			fmt.Println("Count:", currCount)
 			if currCount < 4 && string(input[i][j]) != "." {
 				count += 1
 			}
@@ -52,7 +58,6 @@ func validPosition(row, col, totalRows, totalCols int) bool {
 }
 
 func expand(r, c int, grid [][]rune, steps int) int {
-//	directions := [][]int{{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1},{1,0},{-1,0}}
 	totalRows := len(grid)
 	totalCols := len(grid[0])
 
@@ -77,4 +82,41 @@ func expand(r, c int, grid [][]rune, steps int) int {
 	n8 := expand(r-1,c+1, grid, nextStep)
 
 	return n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8
+}
+
+func partTwo(input [][]rune) (int, error) {
+
+    gridCopy := make([][]rune, len(input)) 
+    for i := range input {                
+        gridCopy[i] = make([]rune, len(input[i]))
+        copy(gridCopy[i], input[i])
+    }
+
+    count := 0
+
+    for {
+        currStep := 0
+        for i, row := range gridCopy { 
+            for j := range row {
+                currCount := expand(i, j, gridCopy, 1) 
+                if currCount < 4 && gridCopy[i][j] == '@' {
+                    currStep++                  
+                    gridCopy[i][j] = '.'       
+                }
+            }
+        }
+
+        count += currStep
+        if currStep == 0 {
+            break
+        }
+
+        newCopy := make([][]rune, len(gridCopy)) 
+        for i := range gridCopy {                
+            newCopy[i] = make([]rune, len(gridCopy[i]))
+            copy(newCopy[i], gridCopy[i])
+        }
+        gridCopy = newCopy 
+    }
+    return count, nil
 }
