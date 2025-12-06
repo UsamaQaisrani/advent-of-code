@@ -28,6 +28,12 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("PartOne:", partOneSol)
+	partTwoSol, err := partTwo(mergedIntervals)
+	if err != nil {
+		log.Fatal("Error in part one:", err)
+		os.Exit(1)
+	}
+	fmt.Println("PartTwo:", partTwoSol)
 }
 
 func mergeIntervals(intervals []string) ([][]int, error) {
@@ -91,6 +97,15 @@ func partOne(ids []string, intervals [][]int) (int, error) {
 				count++
 			}
 		}
+	}
+	return count, nil
+}
+
+func partTwo(intervals [][]int) (int, error) {
+	count := 0
+	for _, interval := range intervals {
+		diff := interval[1] - interval[0] + 1
+		count += diff
 	}
 	return count, nil
 }
